@@ -1,9 +1,9 @@
-    using System.IO;
-    using System.Runtime.InteropServices;
-    using System.Security.Cryptography.X509Certificates;
-    using System.Text.Json;
-    namespace WinFormsApp37
-    {
+            using System.IO;
+            using System.Runtime.InteropServices;
+            using System.Security.Cryptography.X509Certificates;
+            using System.Text.Json;
+            namespace WinFormsApp37
+            {
     public partial class Form1 : Form
     {
         //file 
@@ -13,6 +13,12 @@
         {
             InitializeComponent();
             files = Loading() ?? new List<User>();
+
+
+            // FORCE MANUALLY BINDING EVENTS IN CASE DESIGNER IS BROKEN
+            this.Delete.Click += new System.EventHandler(this.Delete_Click_1);
+            this.Search.TextChanged += new System.EventHandler(this.Search_TextChanged);
+            this.ADD.Click += new System.EventHandler(this.Store_Click);
         }
         //dire mo save ang 
         public string Saved(List<User> user)
@@ -180,9 +186,77 @@
             }
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
+        private void Delete_Click_1(object sender, EventArgs e)
+        {
+            // 1. Check if the user selected an item in the ListBox
+            if (ListBox.SelectedIndex == -1)
+            {
+                MessageBox.Show("Please select an item in the list first.");
+                return;
+            }
+
+            // 2. Get the index of the selected item
+            int index = ListBox.SelectedIndex;
+
+            try
+            {
+                // 3. Sync memory: ensure 'files' list matches what is in the file
+                // This prevents deleting the wrong item if you haven't clicked 'View' in a while
+                files = Loading();
+
+                if (index < files.Count)
+                {
+                    // 4. Remove the item from the C# List
+                    files.RemoveAt(index);
+
+                    // 5. Overwrite the file with the updated list (this "deletes" it from the file)
+                    Saved(files);
+
+                    // 6. Refresh the UI so it disappears from the screen
+                    ViewHistory();
+
+                    MessageBox.Show("Item deleted from file successfully!");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+        }
+
+        private void ADD_Click(object sender, EventArgs e)
+        {
+            Store_Click(sender, e);
+        }
+
+        private void Search_TextChanged(object sender, EventArgs e)
+        {
+            string keyword = Search.Text.Trim().ToLower();
+
+            // Sync current items from file
+            files = Loading() ?? new List<User>();
+
+            ListBox.Items.Clear();
+
+            // Filter items based on what you typed in the Search box
+            var matchedItems = files.Where(u =>
+                (u.ItemName != null && u.ItemName.ToLower().Contains(keyword)) ||
+                u.ItemPrice.ToString().Contains(keyword) ||
+                u.ItemQuantity.ToString().Contains(keyword) ||
+                (u.Oras != null && u.Oras.ToString().Contains(keyword))
+            ).ToList();
+
+            // Show only matched search items inside the ListBox
+            foreach (var result in matchedItems)
+            {
+                ListBox.Items.Add($"ItemName :{result.ItemName}  ItemPrice :{result.ItemPrice}   ItemQuantity :{result.ItemQuantity}    DateTime :{result.Oras}");
+            }
+        }
+
+        private void label1_Click(object sender, EventArgs e)
         {
 
         }
     }
 }
+    
