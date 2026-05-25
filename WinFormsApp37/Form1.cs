@@ -23,7 +23,7 @@
         {
 
             var options = new JsonSerializerOptions { WriteIndented = true };
-            string STORE = JsonSerializer.Serialize(user, options); // Removed Environment.NewLine to keep JSON valid
+            string STORE = JsonSerializer.Serialize(user, options);
             File.WriteAllText(file, STORE);
 
             // Removed Loading() call from here to prevent unnecessary recursion/loops
@@ -73,8 +73,8 @@
             foreach (var result in files)
             {
                 string formattedDate = result.Oras.ToString();
-                ListBox.Items.Add($"ItemName :{result.ItemName}  ItemPrice :{result.ItemPrice}   ItemQuantity :{result.ItemQuantity}    DateTime :{result.Oras}");
-          
+                ListBox.Items.Add($"ItemName : {result.ItemName}  ItemPrice : {result.ItemPrice}   ItemQuantity : {result.ItemQuantity}    DateTime : {result.Oras}");
+
             }
 
         }
@@ -298,6 +298,12 @@
 
         private void StatusResult_Click(object sender, EventArgs e)
         {
+        }
+
+        private void Exit_Click(object sender, EventArgs e)
+        {
+          
+            this.Close();
         }
     }
 }
