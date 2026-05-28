@@ -136,18 +136,13 @@ using System.Runtime.InteropServices;
 
         private void View_Click(object sender, EventArgs e)
         {
-
+           
 
             // DIRE MO VIEW ANG USER IF ICLICK NIYA ANG VIEW BUTTON
-            if (string.IsNullOrEmpty(files.ToString()))
-            {
+          
                 ViewHistory();
-            }
-            else
-            {
-                MessageBox.Show("No data yet");
-            }
             
+          
 
         }
 
