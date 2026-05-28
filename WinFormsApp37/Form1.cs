@@ -1,5 +1,6 @@
             using System.IO;
-            using System.Runtime.InteropServices;
+using System.Reflection;
+using System.Runtime.InteropServices;
             using System.Security.Cryptography.X509Certificates;
             using System.Text.Json;
             namespace WinFormsApp37
@@ -7,47 +8,47 @@
     public partial class Form1 : Form
     {
         //file 
-        public const string file = "Client.json";
-        public List<User> files = new List<User>();
-
+        public const string file = "Client.json"; //mao ni siya ang file path
+        public List<User> files = new List<User>();//mao e ni ang mag hold sa current item records sa computer
+        // ug si user is the object dire masulod ang mga naa ni user nga Class nga nag contains or nag hawid sa ItemName, ItemPrice,ItemQuantity this are the properties of the class User
         public Form1()
         {
             InitializeComponent();
             files = Loading() ?? new List<User>();
-
+          
 
 
         }
-        //dire mo save ang 
+        //dire mo save ang data save sa inputs pero kani siya kay it is a method nga gamiton
         public string Saved(List<User> user)
         {
 
             var options = new JsonSerializerOptions { WriteIndented = true };
             string STORE = JsonSerializer.Serialize(user, options);
             File.WriteAllText(file, STORE);
+            //si writealltext it creates a new file, writes a string of text
 
-            // Removed Loading() call from here to prevent unnecessary recursion/loops
+           
             return STORE;
 
         }
-        //mo load siya tapos tan awun niya if naay sulod ang hmm si Saved nga method.
 
+        //mo load siya tapos tan awun niya if naay sulod ang 
         public List<User> Loading()
         {
-
+            //tan awun if the file is exi
             if (!File.Exists(file))
             {
-                // Removed MessageBox here so it doesn't pop up every time on a fresh install
+                
                 return new List<User>();
             }
 
             try
             {
-                // Read the raw text
+                // Read the raw text yaang e read ang text sa sulod sa file nga Client.json nga file path
                 string filed = File.ReadAllText(file);
 
-                // Convert text into C# object
-                // If the file is empty, return a new list instead of null
+             
                 return JsonSerializer.Deserialize<List<User>>(filed) ?? new List<User>();
             }
             catch (JsonException)
@@ -66,16 +67,16 @@
 
             files = Loading() ?? new List<User>();
 
-            // 2. Clear the screen
             ListBox.Items.Clear();
 
-            // 3. Populate the screen from the synced list 
+          
             foreach (var result in files)
             {
                 string formattedDate = result.Oras.ToString();
                 ListBox.Items.Add($"ItemName : {result.ItemName}  ItemPrice : {result.ItemPrice}   ItemQuantity : {result.ItemQuantity}    DateTime : {result.Oras}");
 
             }
+
 
         }
         private void TextName_TextChanged(object sender, EventArgs e)
@@ -87,7 +88,7 @@
         private void Store_Click(object sender, EventArgs e)
         {
 
-
+            // dire if wala gi butnga maskin usa ka text or numbers sa textbox mag hatag siya ug Message using Message box
             if (string.IsNullOrWhiteSpace(TextName.Text) ||
                     string.IsNullOrWhiteSpace(TextPrice.Text) ||
                     string.IsNullOrWhiteSpace(TextQuantity.Text))
@@ -95,30 +96,33 @@
                 MessageBox.Show("Please fill in all fields.");
                 return;
             }
-
+            //dire mo tan awun nga if decimal number nga gibutang sa user
             if (!decimal.TryParse(TextPrice.Text, out decimal price))
             {
                 MessageBox.Show("Please enter a valid number for Price.");
                 return;
             }
-
+            // dire mo tan aww if integer ang gibutang nga input  
             if (!int.TryParse(TextQuantity.Text, out int quanti))
             {
                 MessageBox.Show("Please enter a valid whole number for Quantity.");
                 return;
             }
 
+            //dire ma solud ang mga gi inputs Textbox 
             User user = new User();
             user.ItemName = TextName.Text;
             user.ItemPrice = price;
             user.ItemQuantity = quanti;
-            // Note: Ensure your User class sets the "Oras" property inside its constructor or here
-            // user.Oras = DateTime.Now.ToString(); 
-
+          
+            // and using the files.ADD MAO NI SIYA ang List nga magstore temporarily sa mga na inputs 
             files.Add(user);
+
+            // and the Saved method is the method nga mag saved sa gi pang input so using the files nga List if naay sulod dire 
+            // masulodsa saved method ang mga data nga nahawidtan ni List
             Saved(files);
 
-            // Clear inputs
+            // it clear the inputs pag kahuman ug saved using the saved method
             TextName.Clear();
             TextPrice.Clear();
             TextQuantity.Clear();
@@ -128,15 +132,16 @@
         }
 
 
-
+       
 
         private void View_Click(object sender, EventArgs e)
         {
 
-
-            ViewHistory();
-
-
+            
+          // DIRE MO VIEW ANG USER IF ICLICK NIYA ANG VIEW BUTTON
+                ViewHistory();
+            
+            
 
         }
 
@@ -153,36 +158,33 @@
         }
 
         private void Delete_Click_1(object sender, EventArgs e)
-        {
-            // 1.Check if the user selected an item in the ListBox
+        { // dire ang delete ang method nga delete.
             if (ListBox.SelectedIndex == -1)
             {
                 MessageBox.Show("Please select an item in the list first.");
                 return;
             }
 
-            // 2. Get the index of the selected item
+            
             int index = ListBox.SelectedIndex;
 
             try
             {
-                // 3. Sync memory safely
-                // Load the fresh data to ensure we are modifying the latest file state
+               
                 List<User> currentFiles = Loading();
 
-                // 4. Validate the index against the freshly loaded data
+               
                 if (index >= 0 && index < currentFiles.Count)
                 {
-                    // 5. Remove the item from the local list
                     currentFiles.RemoveAt(index);
 
-                    // 6. Overwrite the file with the updated list
+ 
                     Saved(currentFiles);
 
-                    // 7. Update your global variable (if 'files' is used elsewhere)
+                  
                     files = currentFiles;
 
-                    // 8. Refresh the UI so it disappears from the screen
+                    
                     ViewHistory();
 
                     MessageBox.Show("Item deleted from file successfully!");
@@ -191,7 +193,7 @@
                 {
                     MessageBox.Show("The list has changed. Please refresh and try again.", "Sync Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
-                    // FIXED: Added the missing call to force a refresh and realign the UI with reality
+                
                     ViewHistory();
                 }
             }
@@ -218,14 +220,14 @@
             {
                 bool isChanged = false;
 
-                // 1. Fixed: Reading from NameChange.Text instead of TextName.Text
+                // 
                 if (!string.IsNullOrWhiteSpace(NameChange.Text))
                 {
                     files[index].ItemName = NameChange.Text;
                     isChanged = true;
                 }
 
-                // 2. Fixed: Parsing PriceChange.Text instead of TextPrice.Text
+               
                 if (!string.IsNullOrWhiteSpace(PriceChange.Text))
                 {
                     if (decimal.TryParse(PriceChange.Text, out decimal newPrice))
@@ -240,7 +242,7 @@
                     }
                 }
 
-                // 3. Fixed: Parsing QuantityChange.Text instead of TextQuantity.Text
+           
                 if (!string.IsNullOrWhiteSpace(QuantityChange.Text))
                 {
                     if (int.TryParse(QuantityChange.Text, out int newQuanti))
@@ -257,13 +259,12 @@
 
                 if (isChanged)
                 {
-                    // Update timestamp to show when it was modified
+     
                     files[index].Oras = DateTime.Now;
 
-                    Saved(files);       // Write to JSON
-                    ViewHistory();     // Refresh the ListBox display
-
-                    // Clear the update textboxes
+                    Saved(files);       
+                    ViewHistory();   
+                   
                     NameChange.Clear();
                     PriceChange.Clear();
                     QuantityChange.Clear();
@@ -274,10 +275,10 @@
                 {
                     MessageBox.Show("No new inputs entered to change.");
                 }
-            } // <-- Closed index < files.Count block
+            } 
         }
 
-        // Cleaned up empty unused designer event handlers
+      
 
 
 
@@ -302,7 +303,7 @@
 
         private void Exit_Click(object sender, EventArgs e)
         {
-          
+          //kini ang button nga click if tuslokon ma exit
             this.Close();
         }
     }

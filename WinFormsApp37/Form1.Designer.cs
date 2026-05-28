@@ -42,8 +42,6 @@
             QuantityChange = new TextBox();
             label2 = new Label();
             label3 = new Label();
-            Status = new Label();
-            StatusResult = new Label();
             Exit = new Button();
             panel1 = new Panel();
             panel2 = new Panel();
@@ -204,27 +202,6 @@
             label3.TabIndex = 16;
             label3.Text = "Welcome! Please log your items here";
             // 
-            // Status
-            // 
-            Status.AutoSize = true;
-            Status.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            Status.Location = new Point(370, 417);
-            Status.Name = "Status";
-            Status.Size = new Size(65, 20);
-            Status.TabIndex = 17;
-            Status.Text = "Status  :";
-            // 
-            // StatusResult
-            // 
-            StatusResult.AutoSize = true;
-            StatusResult.Font = new Font("Segoe UI", 10F);
-            StatusResult.Location = new Point(454, 419);
-            StatusResult.Name = "StatusResult";
-            StatusResult.Size = new Size(17, 19);
-            StatusResult.TabIndex = 18;
-            StatusResult.Text = "0";
-            StatusResult.Click += StatusResult_Click;
-            // 
             // Exit
             // 
             Exit.Location = new Point(1041, 567);
@@ -269,8 +246,6 @@
             Controls.Add(panel2);
             Controls.Add(panel1);
             Controls.Add(Exit);
-            Controls.Add(StatusResult);
-            Controls.Add(Status);
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(Delete);
@@ -303,8 +278,6 @@
         private TextBox QuantityChange;
         private Label label2;
         private Label label3;
-        private Label Status;
-        private Label StatusResult;
         private Button Exit;
         private Panel panel1;
         private Panel panel2;
