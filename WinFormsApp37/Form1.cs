@@ -62,7 +62,7 @@ using System.Runtime.InteropServices;
 
         //dire ma view ang mga na saved sa ngaSaved nga method nga naay serializer;
         //tapos dire yaang ibalik sa original nga out put hmm orginal stae of object
-        public void ViewHistory()
+        public string ViewHistory()
         {
 
             files = Loading() ?? new List<User>();
@@ -74,9 +74,9 @@ using System.Runtime.InteropServices;
             {
                 string formattedDate = result.Oras.ToString();
                 ListBox.Items.Add($"ItemName : {result.ItemName}  ItemPrice : {result.ItemPrice}   ItemQuantity : {result.ItemQuantity}    DateTime : {result.Oras}");
-
+                
             }
-
+            return files.ToString();
 
         }
         private void TextName_TextChanged(object sender, EventArgs e)
@@ -136,12 +136,18 @@ using System.Runtime.InteropServices;
 
         private void View_Click(object sender, EventArgs e)
         {
-           
+            files = Loading() ?? new List<User>();
+
 
             // DIRE MO VIEW ANG USER IF ICLICK NIYA ANG VIEW BUTTON
-          
-                ViewHistory();
+
+
             
+        
+            
+        ViewHistory();
+     
+
           
 
         }
